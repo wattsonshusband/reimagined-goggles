@@ -8,7 +8,7 @@ app.use(express.json());
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const REDIRECT_URI = `https://${process.env.DOMAIN_NAME}/callback`;
+const REDIRECT_URI = process.env.CALLBACK_URL;
 
 app.get("/", (req, res) => {
  res.send("OK");
