@@ -33,19 +33,22 @@ app.get("/callback", async (req, res) => {
 
  const tokenRes = await axios.post(
   "https://accounts.spotify.com/api/token",
+  new URLSearchParams({
+   grant_type: "authorization_code",
+   code: req.query.code,
+   redirect_uri: process.env.REDIRECT_URI
+  }).toString(),
   {
-   method: "POST",
    headers: {
     "Content-Type": "application/x-www-form-urlencoded",
-    Authorization:
+    "Authorization":
      "Basic " +
-     Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
-   },
-   body: new URLSearchParams({
-    grant_type: "authorization_code",
-    code,
-    redirect_uri: REDIRECT_URI,
-   }),
+     Buffer.from(
+      process.env.SPOTIFY_CLIENT_ID +
+       ":" +
+       process.env.SPOTIFY_CLIENT_SECRET
+     ).toString("base64")
+   }
   }
  );
 
