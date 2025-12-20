@@ -10,6 +10,10 @@ const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const REDIRECT_URI = `https://${process.env.DOMAIN_NAME}/callback`;
 
+app.get("/", (req, res) => {
+ res.send("OK");
+});
+
 // Step 1 – redirect user to Spotify
 app.get("/login", (req, res) => {
  const scope = "streaming user-read-email user-read-private";
@@ -57,7 +61,7 @@ app.get("/callback", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
- console.log("Auth server running on port 3000");
-});
 
+app.listen(PORT, "0.0.0.0", () => {
+ console.log(`Auth server running on port ${PORT}`);
+});
