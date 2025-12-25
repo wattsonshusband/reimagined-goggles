@@ -5,7 +5,7 @@ const { saveTokens, getTokens } = require("./tokenStore");
 const querystring = require("querystring");
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const REDIRECT_URI = "http://localhost:4567/callback"; // your local callback
+const REDIRECT_URI = "http://reimagined-goggles-production.up.railway.app/callback";
 const SCOPES = "streaming user-read-playback-state user-modify-playback-state";
 
 let codeVerifierGlobal = null;
@@ -82,3 +82,4 @@ async function getValidAccessToken() {
 }
 
 module.exports = { getAuthURL, exchangeCode, getValidAccessToken };
+
