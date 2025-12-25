@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
-const { post } = require('axios');
+const axios = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -31,17 +31,37 @@ app.get("/login", (req, res) => {
 app.get("/callback", async (req, res) => {
  const code = req.query.code;
 
- const tokenRes = await post("https://accounts.spotify.com/api/token", 
-  { form: { code: code, redirect_uri: process.env.REDIRECT_URI, grant_type: 'authorization_code' } }, 
-  { headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': `Basic ${(new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))}` } } );
+  const authOptions = {
+    method: "POST",
+    url: "https://accounts.spotify.com/api/token",
+    data: querystring.stringify({
+      code: code,
+      redirect_uri: process.env.REDIRECT_URI,
+      grant_type: "authorization_code"
+    }),
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization:
+        "Basic " +
+        Buffer.from(
+          process.env.SPOTIFY_CLIENT_ID +
+            ":" +
+            process.env.SPOTIFY_CLIENT_SECRET
+        ).toString("base64")
+    }
+  };
 
- const data = await tokenRes.json();
+  const tokenRes = await axios(authOptions);
+
+
+  const access_token = response.data.access_token;
+  const refresh_token = response.data.refresh_token;
 
  // Send token back to Electron via custom protocol
  res.send(`
   <script>
    window.location.href =
-    "myapp://callback?token=${data.access_token}";
+    "myapp://callback?token=${access_token}";
   </script>
  `);
 });
