@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
-const axios = require('axios');
+const { post } = require('axios');
 
 const app = express();
 app.use(express.json());
@@ -31,20 +31,9 @@ app.get("/login", (req, res) => {
 app.get("/callback", async (req, res) => {
  const code = req.query.code;
 
- const tokenRes = await axios.post(
-  "https://accounts.spotify.com/api/token",
-  new URLSearchParams({
-   grant_type: "authorization_code",
-   code: req.query.code,
-   redirect_uri: process.env.REDIRECT_URI
-  }).toString(),
-  {
-   headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Authorization": "Basic " + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
-   }
-  }
- );
+ const tokenRes = await post("https://accounts.spotify.com/api/token", 
+  { form: { code: code, redirect_uri: process.env.REDIRECT_URI, grant_type: 'authorization_code' } }, 
+  { headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': `Basic ${(new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))}` } } );
 
  const data = await tokenRes.json();
 
